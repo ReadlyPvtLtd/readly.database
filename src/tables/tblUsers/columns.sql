@@ -1,0 +1,15 @@
+CALL uspAddColumnIfNotExists('tblUsers','member_id','VARCAHR(50)');
+CALL uspAddColumnIfNotExists('tblUsers','first_name','VARCAHR(100)');
+CALL uspAddColumnIfNotExists('tblUsers','last_name','VARCAHR(100)');
+CALL uspAddColumnIfNotExists('tblUsers','email','VARCAHR(255)');
+CALL uspAddColumnIfNotExists('tblUsers','phone','VARCAHR(50)');
+CALL uspAddColumnIfNotExists('tblUsers','password_hash','VARCAHR(255)');
+CALL uspAddColumnIfNotExists('tblUsers','address','text');
+CALL uspAddColumnIfNotExists('tblUsers','city','VARCAHR(100)');
+CALL uspAddColumnIfNotExists('tblUsers','state','VARCAHR(100)');
+CALL uspAddColumnIfNotExists('tblUsers','country','VARCAHR(100)');
+CALL uspAddColumnIfNotExists('tblUsers','postal_code','VARCAHR(20)');
+CALL uspAddColumnIfNotExists('tblUsers','role','TINYINT');
+CALL uspAddColumnIfNotExists('tblUsers','status','TINYINT');
+CALL uspAddColumnIfNotExists('tblUsers','created_at','DATETIME');
+CALL uspAddColumnIfNotExists('tblUsers','updated_at','DATETIME');

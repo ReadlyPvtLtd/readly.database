@@ -1,0 +1,1 @@
+CALL uspAddPKIfNotExists('tblBookGenres', 'id');

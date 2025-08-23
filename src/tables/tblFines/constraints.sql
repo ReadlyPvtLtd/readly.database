@@ -1,0 +1,1 @@
+CALL uspAddPKIfNotExists('tblFines', 'id');

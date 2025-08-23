@@ -1,0 +1,15 @@
+CALL uspAddColumnIfNotExists('tblbooks','Isbn10','CHAR(10)');
+CALL uspAddColumnIfNotExists('tblbooks','Isbn13','CHAR(13)');
+CALL uspAddColumnIfNotExists('tblbooks','Title','VARCHAR(255)');
+CALL uspAddColumnIfNotExists('tblbooks','Subtitle','VARCHAR(255)');
+CALL uspAddColumnIfNotExists('tblbooks','Description','TEXT');
+CALL uspAddColumnIfNotExists('tblbooks','Edition','VARCHAR(50)');
+CALL uspAddColumnIfNotExists('tblbooks','Language_code','CHAR(5)');
+CALL uspAddColumnIfNotExists('tblbooks','Page_count','INT');
+CALL uspAddColumnIfNotExists('tblbooks','Publication_year','YEAR)');
+CALL uspAddColumnIfNotExists('tblbooks','Publication_id','BIGINT');
+CALL uspAddColumnIfNotExists('tblbooks','Cover_image_url','TEXT');
+CALL uspAddColumnIfNotExists('tblbooks','Meta_title','VARCHAR(255)');
+CALL uspAddColumnIfNotExists('tblbooks','Meta_description','VARCHAR(512)');
+CALL uspAddColumnIfNotExists('tblbooks','Created_at','DATETIME');
+CALL uspAddColumnIfNotExists('tblbooks','Uploaded_at','DATETIME');

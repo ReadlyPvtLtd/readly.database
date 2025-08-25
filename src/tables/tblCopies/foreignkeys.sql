@@ -1,0 +1,2 @@
+CALL uspAddPKIfNotExists('tblCopies','book_id','tblBooks','id','fk_tblCopies.book_id_tblBooks.id');
+CALL uspAddPKIfNotExists('tblCopies','branch_id','tblBranches','id','fk_tblCopies.branch_id_tblBranches.id')

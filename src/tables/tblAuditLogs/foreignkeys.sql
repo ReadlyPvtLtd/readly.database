@@ -1,0 +1,1 @@
+CALL uspAddPKIfNotExists('tblAuditLogs','changed_by','tblUsers','id','fk_tblAuditLogs.changed_by_tblUsers.id');

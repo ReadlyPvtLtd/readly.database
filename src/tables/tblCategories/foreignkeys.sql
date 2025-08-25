@@ -1,0 +1,1 @@
+CALL uspAddPKIfNotExists('tblCategories','parent_id','tblCategories','id','tblCategories.parent_id_tblCategories.id');

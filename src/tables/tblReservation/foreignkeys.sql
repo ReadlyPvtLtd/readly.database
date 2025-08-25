@@ -1,0 +1,2 @@
+CALL uspAddPKIfNotExists('tblReservations','user_id','tblUsers','id','fk_tblReservations.user_id_tblUsers.id');
+CALL uspAddPKIfNotExists('tblReservations','book_id','tblBooks','id','fk_tblReservations.book_id_tblBooks.id');

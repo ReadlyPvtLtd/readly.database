@@ -1,0 +1,1 @@
+CALL uspAddPKIfNotExists('tblBooksAttributes','book_id','tblBooks','id','fk_tblBooksAttributes.book_id_tblBooks.id');

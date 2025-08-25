@@ -1,0 +1,2 @@
+CALL uspAddPKIfNotExists('tblBookGenres','book_id','tblBooks','id','fk_tblBookGenres.book_id_tblBooks.id');
+CALL uspAddPKIfNotExists('tblBookGenres','genre_id','tblGenres','id','fk_tblBookGenres.genre_id_tblGenres.id')

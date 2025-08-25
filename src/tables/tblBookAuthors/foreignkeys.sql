@@ -1,0 +1,2 @@
+CALL uspAddPKIfNotExists('tbBookAuthors','book_id','tblBooks','id','fk_tblBookAuthors.book_id_tblBooks.id');
+CALL uspAddPKIfNotExists('tbBookAuthors','author_id','tblAuthors','id','fk_tblBookAuthors.author_id_tblAuthors.id')

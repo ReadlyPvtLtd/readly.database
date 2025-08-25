@@ -6,33 +6,31 @@ CREATE PROCEDURE uspApplyAutoIncrementIfExists (
     IN in_column_name VARCHAR(64)
 )
 BEGIN
-    DECLARE table_exists INT DEFAULT 0;
-    DECLARE column_exists INT DEFAULT 0;
-    DECLARE is_auto_increment INT DEFAULT 0;
     DECLARE col_type VARCHAR(255);
+    DECLARE extra_info VARCHAR(255);
 
-    -- Check if table exists in current database
-    SELECT COUNT(*) INTO table_exists
-    FROM information_schema.tables
-    WHERE table_schema = DATABASE()
-      AND table_name = in_table_name;
+    -- Step 1: Check table existence using the function
+    IF TableExists(in_table_name) THEN
 
-    IF table_exists > 0 THEN
+        -- Step 2: Check column existence using the function
+        IF ColumnExists(in_table_name, in_column_name) THEN
 
-        -- Check if column exists in the table
-        SELECT COUNT(*), COLUMN_TYPE, EXTRA
-        INTO column_exists, col_type, @extra
-        FROM information_schema.columns
-        WHERE table_schema = DATABASE()
-          AND table_name = in_table_name
-          AND column_name = in_column_name;
+            -- Step 3: Get the column type and EXTRA info (AUTO_INCREMENT flag lives in EXTRA)
+            SELECT COLUMN_TYPE, EXTRA
+            INTO col_type, extra_info
+            FROM information_schema.columns
+            WHERE table_schema = DATABASE()
+              AND table_name = in_table_name
+              AND column_name = in_column_name;
 
-        IF column_exists > 0 THEN
+            -- Step 4: If column is not AUTO_INCREMENT already, alter it
+            IF LOCATE('auto_increment', extra_info) = 0 THEN
+                SET @sql = CONCAT(
+                    'ALTER TABLE `', in_table_name, '` ',
+                    'MODIFY COLUMN `', in_column_name, '` ',
+                    col_type, ' AUTO_INCREMENT'
+                );
 
-            -- Check if column already has AUTO_INCREMENT
-            IF LOCATE('auto_increment', @extra) = 0 THEN
-                SET @sql = CONCAT('ALTER TABLE `', in_table_name, '` 
-                                   MODIFY COLUMN `', in_column_name, '` ', col_type, ' AUTO_INCREMENT');
                 PREPARE stmt FROM @sql;
                 EXECUTE stmt;
                 DEALLOCATE PREPARE stmt;

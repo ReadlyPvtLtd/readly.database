@@ -105,10 +105,10 @@ BEGIN
             END;
 
             SET @sql = CONCAT(
-                'ALTER TABLE ', in_table_name,
-                ' ADD CONSTRAINT ', in_constraint_name,
-                ' FOREIGN KEY (', in_column_name, ')',
-                ' REFERENCES ', in_ref_table_name, '(', in_ref_column_name, ')'
+                'ALTER TABLE `', in_table_name,
+                '` ADD CONSTRAINT `', in_constraint_name,
+                '` FOREIGN KEY (`', in_column_name, '`)',
+                ' REFERENCES `', in_ref_table_name, '`(`', in_ref_column_name, '`)'
             );
             PREPARE stmt FROM @sql;
             EXECUTE stmt;
@@ -124,4 +124,4 @@ BEGIN
 END
 $$
 
-DELIMITER
+DELIMITER ;

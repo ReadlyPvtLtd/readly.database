@@ -72,13 +72,13 @@ BEGIN
                 SELECT CONCAT(
                     'Primary key ',
                     in_constraint_name,
-                    ' creation failed.'
+                    ' creation failed due to an exception.'
                 ) AS message;
             END;
 
             SET @sql = CONCAT('ALTER TABLE ', in_table_name,
-                              ' ADD CONSTRAINT ', in_constraint_name,
-                              ' PRIMARY KEY (', in_column_name, ')');
+                              ' ADD CONSTRAINT `', in_constraint_name,
+                              '` PRIMARY KEY (', in_column_name, ')');
             PREPARE stmt FROM @sql;
             EXECUTE stmt;
             DEALLOCATE PREPARE stmt;

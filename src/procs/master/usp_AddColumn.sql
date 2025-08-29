@@ -32,10 +32,12 @@ CREATE PROCEDURE usp_AddColumn(
     IN in_required BOOLEAN
 )
 BEGIN
+    -- Declare variables for type handling and dynamic SQL
     DECLARE v_data_type VARCHAR(64);
     DECLARE v_sql VARCHAR(2000);
     DECLARE v_type_prefix VARCHAR(32);
 
+    -- Handle any SQL exception and print a custom message
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
         SELECT CONCAT(
@@ -45,9 +47,11 @@ BEGIN
         ) AS message;
     END;
 
+    -- Always use uppercase for data type for robust comparison
     SET v_data_type = UPPER(in_data_type);
     SET v_type_prefix = SUBSTRING_INDEX(v_data_type, '(', 1);
 
+    -- Check if table exists
     IF NOT ufn_DoesTableExist(in_table_name) THEN
         SELECT CONCAT(
             'Column ',
@@ -56,6 +60,7 @@ BEGIN
             in_table_name,
             ' does not exist.'
         ) AS message;
+    -- Check if column already exists
     ELSEIF ufn_DoesColumnExist(in_table_name, in_column_name) THEN
         SELECT CONCAT(
             'Column ',
@@ -65,22 +70,27 @@ BEGIN
             '.'
         ) AS message;
     ELSE
+        -- Start building the ALTER TABLE statement
         SET @sql = CONCAT(
             'ALTER TABLE ', in_table_name,
             ' ADD COLUMN ', in_column_name, ' ', v_data_type
         );
 
+        -- Add NOT NULL if required
         IF in_required THEN
             SET @sql = CONCAT(@sql, ' NOT NULL');
         END IF;
 
+        -- Handle default value based on data type
         IF in_default_value IS NOT NULL AND in_default_value != '' THEN
+            -- String types: quote if not already quoted
             IF v_type_prefix IN ('CHAR', 'VARCHAR', 'TEXT', 'TINYTEXT', 'MEDIUMTEXT', 'LONGTEXT', 'ENUM', 'SET') THEN
                 IF LEFT(in_default_value, 1) = '''' AND RIGHT(in_default_value, 1) = '''' THEN
                     SET @sql = CONCAT(@sql, ' DEFAULT ', in_default_value);
                 ELSE
                     SET @sql = CONCAT(@sql, ' DEFAULT ''', REPLACE(in_default_value, '''', ''''''), '''');
                 END IF;
+            -- Date/time types: allow functions or quote as needed
             ELSEIF v_type_prefix IN ('DATE', 'DATETIME', 'TIMESTAMP', 'TIME', 'YEAR') THEN
                 IF in_default_value REGEXP '^[A-Za-z_][A-Za-z0-9_]*\\(.*\\)$' OR
                    in_default_value IN ('CURRENT_TIMESTAMP', 'UTC_TIMESTAMP', 'NOW()') THEN
@@ -90,8 +100,10 @@ BEGIN
                 ELSE
                     SET @sql = CONCAT(@sql, ' DEFAULT ''', REPLACE(in_default_value, '''', ''''''), '''');
                 END IF;
+            -- Numeric and boolean types: do not quote
             ELSEIF v_type_prefix IN ('INT', 'INTEGER', 'BIGINT', 'SMALLINT', 'TINYINT', 'MEDIUMINT', 'FLOAT', 'DOUBLE', 'DECIMAL', 'NUMERIC', 'BIT', 'BOOL', 'BOOLEAN') THEN
                 SET @sql = CONCAT(@sql, ' DEFAULT ', in_default_value);
+            -- Fallback: treat as string
             ELSE
                 IF LEFT(in_default_value, 1) = '''' AND RIGHT(in_default_value, 1) = '''' THEN
                     SET @sql = CONCAT(@sql, ' DEFAULT ', in_default_value);
@@ -101,6 +113,7 @@ BEGIN
             END IF;
         END IF;
 
+        -- Execute the dynamic SQL to add the column
         PREPARE stmt FROM @sql;
         EXECUTE stmt;
         DEALLOCATE PREPARE stmt;

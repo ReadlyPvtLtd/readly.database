@@ -1,5 +1,2 @@
-CALL uspAddPKIfNotExists('tblAuditLogs','id');
-CALL uspApplyAutoIncrementIfExists('tblAuditLogs','id');
-CALL uspAlterColumnNotNull('tblAuditLogs', 'table_name');
-CALL uspAlterColumnNotNull('tblAuditLogs', 'record_id');
-CALL uspAlterColumnNotNull('tblAuditLogs', 'action');
+CALL usp_AddCheck('tblAuditLogs', 'action', '`action` IN (1, 2, 3)');
+CALL usp_AddCheck('tblAuditLogs', 'changed_at', '`changed_at` <= UTC_TIMESTAMP()');

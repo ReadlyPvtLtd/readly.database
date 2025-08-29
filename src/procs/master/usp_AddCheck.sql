@@ -44,6 +44,7 @@ BEGIN
     DECLARE v_constraint_name VARCHAR(130);
     DECLARE v_exists INT DEFAULT 0;
 
+    -- Handle any SQL exception and print a custom message
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
         SELECT CONCAT(
@@ -55,14 +56,17 @@ BEGIN
         ) AS message;
     END;
 
+    -- Build constraint name
     SET v_constraint_name = CONCAT('chk_', in_table_name, '.', in_column_name);
 
+    -- Check if table exists
     IF NOT ufn_DoesTableExist(in_table_name) THEN
         SELECT CONCAT(
             'Table `',
             in_table_name,
             '` does not exist.'
         ) AS message;
+    -- Check if column exists
     ELSEIF NOT ufn_DoesColumnExist(in_table_name, in_column_name) THEN
         SELECT CONCAT(
             'Column `',
@@ -72,6 +76,7 @@ BEGIN
             '`.'
         ) AS message;
     ELSE
+        -- Check if the constraint already exists
         SELECT COUNT(1) INTO v_exists
         FROM information_schema.table_constraints
         WHERE table_schema = DATABASE()
@@ -80,6 +85,7 @@ BEGIN
           AND constraint_name = v_constraint_name;
 
         IF v_exists > 0 THEN
+            -- Drop the existing constraint before adding the new one
             SET @sql_drop = CONCAT(
                 'ALTER TABLE `', in_table_name, '` DROP CONSTRAINT `', v_constraint_name, '`'
             );
@@ -87,6 +93,7 @@ BEGIN
             EXECUTE stmt_drop;
             DEALLOCATE PREPARE stmt_drop;
 
+            -- Add the new/updated constraint
             SET @sql_add = CONCAT(
                 'ALTER TABLE `', in_table_name, '` ',
                 'ADD CONSTRAINT `', v_constraint_name, '` CHECK (', in_check_expr, ')'
@@ -103,6 +110,7 @@ BEGIN
                 '`.'
             ) AS message;
         ELSE
+            -- Add the new constraint
             SET @sql_add = CONCAT(
                 'ALTER TABLE `', in_table_name, '` ',
                 'ADD CONSTRAINT `', v_constraint_name, '` CHECK (', in_check_expr, ')'

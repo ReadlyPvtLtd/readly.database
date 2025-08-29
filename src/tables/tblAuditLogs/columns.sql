@@ -1,7 +1,7 @@
-CALL uspAddColumnIfNotExists('tblAuditLogs','table_name','VARCHAR(255)');
-CALL uspAddColumnIfNotExists('tblAuditLogs','record_id','BIGINT');
-CALL uspAddColumnIfNotExists('tblAuditLogs','action','TINYINT');
-CALL uspAddColumnIfNotExists('tblAuditLogs','old_value','JSON');
-CALL uspAddColumnIfNotExists('tblAuditLogs','new_value','JSON');
-CALL uspAddColumnIfNotExists('tblAuditLogs','changed_by','BIGINT');
-CALL uspAddColumnIfNotExists('tblAuditLogs','changed_at','DATETIME');
+CALL usp_AddColumn('tblAuditLogs', 'table_name', 'VARCHAR(255)', NULL, TRUE);
+CALL usp_AddColumn('tblAuditLogs', 'record_id', 'BIGINT', NULL, TRUE);
+CALL usp_AddColumn('tblAuditLogs', 'action', 'TINYINT', NULL, TRUE);
+CALL usp_AddColumn('tblAuditLogs', 'old_value', 'JSON', NULL, FALSE);
+CALL usp_AddColumn('tblAuditLogs', 'new_value', 'JSON', NULL, FALSE);
+CALL usp_AddColumn('tblAuditLogs', 'changed_by', 'BIGINT', NULL, TRUE);
+CALL usp_AddColumn('tblAuditLogs', 'changed_at', 'TIMESTAMP', 'UTC_TIMESTAMP', TRUE);

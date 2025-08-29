@@ -23,9 +23,11 @@ CREATE PROCEDURE usp_AutoIncrement(
     IN in_column_name VARCHAR(64)
 )
 BEGIN
+    -- Variables to hold column type and extra info (like AUTO_INCREMENT)
     DECLARE v_data_type VARCHAR(64);
     DECLARE v_extra VARCHAR(64);
 
+    -- Handle any SQL exception and print a custom message
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
         SELECT CONCAT(
@@ -37,12 +39,14 @@ BEGIN
         ) AS message;
     END;
 
+    -- Check if table exists
     IF NOT ufn_DoesTableExist(in_table_name) THEN
         SELECT CONCAT(
             'Table ',
             in_table_name,
             ' does not exist.'
         ) AS message;
+    -- Check if column exists
     ELSEIF NOT ufn_DoesColumnExist(in_table_name, in_column_name) THEN
         SELECT CONCAT(
             'Column ',
@@ -52,6 +56,7 @@ BEGIN
             '.'
         ) AS message;
     ELSE
+        -- Get column type and extra info
         SELECT COLUMN_TYPE, EXTRA
         INTO v_data_type, v_extra
         FROM information_schema.columns
@@ -59,6 +64,7 @@ BEGIN
           AND table_name = in_table_name
           AND column_name = in_column_name;
 
+        -- If already AUTO_INCREMENT, inform the user
         IF v_extra LIKE '%auto_increment%' THEN
             SELECT CONCAT(
                 'Column ',
@@ -67,6 +73,7 @@ BEGIN
                 in_table_name,
                 '.'
             ) AS message;
+        -- Only integer types can be set to AUTO_INCREMENT
         ELSEIF v_data_type NOT REGEXP '^(int|bigint|smallint|mediumint|tinyint)' THEN
             SELECT CONCAT(
                 'Column ',
@@ -74,6 +81,7 @@ BEGIN
                 ' is not an integer type and cannot be set to AUTO_INCREMENT.'
             ) AS message;
         ELSE
+            -- Alter the column to set AUTO_INCREMENT
             SET @sql = CONCAT(
                 'ALTER TABLE ', in_table_name,
                 ' MODIFY COLUMN ', in_column_name, ' ', v_data_type, ' NOT NULL AUTO_INCREMENT'

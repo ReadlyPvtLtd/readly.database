@@ -25,6 +25,7 @@ CREATE PROCEDURE usp_CreateTable(
     IN in_table_name VARCHAR(64)
 )
 BEGIN
+    -- Handle any SQL exception and print a custom message
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
         SELECT CONCAT(
@@ -34,6 +35,7 @@ BEGIN
         ) AS message;
     END;
 
+    -- Check if table already exists
     IF ufn_DoesTableExist(in_table_name) THEN
         SELECT CONCAT(
             'Table ',
@@ -41,6 +43,7 @@ BEGIN
             ' already exists.'
         ) AS message;
     ELSE
+        -- Create table with only 'id' column (no constraints yet)
         SET @sql = CONCAT(
             'CREATE TABLE ', in_table_name, ' (',
                 'id INT',
@@ -50,15 +53,20 @@ BEGIN
         EXECUTE stmt;
         DEALLOCATE PREPARE stmt;
 
+        -- Add primary key constraint on 'id'
         CALL usp_CreatePrimaryKey(in_table_name, 'id', CONCAT('pk_', in_table_name, '.id'));
+
+        -- Make 'id' column AUTO_INCREMENT
         CALL usp_AutoIncrement(in_table_name, 'id');
 
+        -- Add standard columns using usp_AddColumn
         CALL usp_AddColumn(in_table_name, 'created_by', 'INT', NULL, TRUE);
         CALL usp_AddColumn(in_table_name, 'updated_by', 'INT', NULL, FALSE);
         CALL usp_AddColumn(in_table_name, 'created_at', 'TIMESTAMP', 'UTC_TIMESTAMP', TRUE);
         CALL usp_AddColumn(in_table_name, 'updated_at', 'TIMESTAMP', NULL, FALSE);
         CALL usp_AddColumn(in_table_name, 'void', 'BOOLEAN', '0', FALSE);
 
+        -- Success message
         SELECT CONCAT(
             'Table ',
             in_table_name,

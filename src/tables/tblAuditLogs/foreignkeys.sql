@@ -1,1 +1,1 @@
-CALL uspAddPKIfNotExists('tblAuditLogs','changed_by','tblUsers','id','fk_tblAuditLogs.changed_by_tblUsers.id');
+CALL usp_CreateForeignKey('tblAuditLogs', 'changed_by', 'tblUsers', 'id');

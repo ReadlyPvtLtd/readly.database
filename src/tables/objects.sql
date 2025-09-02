@@ -1,0 +1,16 @@
+CALL usp_CreateTable('tblAuditLogs');
+CALL usp_CreateTable('tblAuthors');
+CALL usp_CreateTable('tblBookAuthors');
+CALL usp_CreateTable('tblBookGenres');
+CALL usp_CreateTable('tblBooks');
+CALL usp_CreateTable('tblBooksAttributes');
+CALL usp_CreateTable('tblBranches');
+CALL usp_CreateTable('tblCategories');
+CALL usp_CreateTable('tblCopies');
+CALL usp_CreateTable('tblDigitalResources');
+CALL usp_CreateTable('tblFines');
+CALL usp_CreateTable('tblGenres');
+CALL usp_CreateTable('tblLoans');
+CALL usp_CreateTable('tblPublishers');
+CALL usp_CreateTable('tblReservations');
+CALL usp_CreateTable('tblUsers');

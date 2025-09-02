@@ -1,33 +1,35 @@
 DELIMITER $$
 
-CREATE TRIGGER trg_after_insert_reservation
-AFTER INSERT ON tblReservation
+CREATE TRIGGER trg_after_insert_tblReservations
+AFTER INSERT ON tblReservations
 FOR EACH ROW
 BEGIN
     INSERT INTO tblAuditLogs (
         table_name,
         record_id,
         action,
-        new_value,
+        new_data,
         changed_by,
         changed_at
-    )
-    VALUES (
-        'tblReservation',
+    ) VALUES (
+        'tblReservations',
         NEW.id,
-        'insert',
+        1,
         JSON_OBJECT(
-            'reservation_id', NEW.id,
+            'id', NEW.id,
+            'created_at', NEW.created_at,
+            'updated_at', NEW.updated_at,
+            'created_by', NEW.created_by,
+            'updated_by', NEW.updated_by,
+            'void', NEW.void,
+            'book_id', NEW.book_id,
             'user_id', NEW.user_id,
-            'room_id', NEW.room_id,
-            'check_in_date', NEW.check_in_date,
-            'check_out_date', NEW.check_out_date,
-            'status', NEW.status,
-            'created_at', NEW.created_at
+            'reservation_date', NEW.reservation_date,
+            'status', NEW.status
         ),
-        NEW.user_id,
-        NOW()
+        NEW.created_by,
+        UTC_TIMESTAMP()
     );
-END $$
+END$$
 
 DELIMITER ;

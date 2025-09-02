@@ -8,22 +8,27 @@ BEGIN
         table_name,
         record_id,
         action,
-        changed_data,
+        new_data,
         changed_by,
         changed_at
-    ) 
-    VALUES (
+    ) VALUES (
         'tblReservations',
         NEW.id,
-        'update',
+        2,
         JSON_OBJECT(
-            'old_status', OLD.status,
-            'new_status', NEW.status,
-            'old_reservation_date', OLD.reservation_date,
-            'new_reservation_date', NEW.reservation_date
+            'id', NEW.id,
+            'created_at', NEW.created_at,
+            'updated_at', NEW.updated_at,
+            'created_by', NEW.created_by,
+            'updated_by', NEW.updated_by,
+            'void', NEW.void,
+            'book_id', NEW.book_id,
+            'user_id', NEW.user_id,
+            'reservation_date', NEW.reservation_date,
+            'status', NEW.status
         ),
-        NEW.user_id,
-        NOW()
+        NEW.updated_by,
+        UTC_TIMESTAMP()
     );
 END$$
 

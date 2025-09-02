@@ -1,53 +1,44 @@
 DELIMITER $$
 
-CREATE TRIGGER trg_after_update_users
-AFTER UPDATE ON tblUsers
+CREATE TRIGGER trg_after_update_tblUsers
+AFTER UPDATE ON tblusers
 FOR EACH ROW
 BEGIN
     INSERT INTO tblAuditLogs (
         table_name,
         record_id,
         action,
-        old_value,
-        new_value,
+        new_data,
         changed_by,
         changed_at
-    )
-    VALUES (
+    ) VALUES (
         'tblUsers',
         NEW.id,
-        'update',
+        2,
         JSON_OBJECT(
-            'member_id', OLD.member_id,
-            'first_name', OLD.first_name,
-            'last_name', OLD.last_name,
-            'email', OLD.email,
-            'phone', OLD.phone,
-            'address', OLD.address,
-            'city', OLD.city,
-            'state', OLD.state,
-            'country', OLD.country,
-            'postal_code', OLD.postal_code,
-            'status', OLD.status,
-            'created_at', OLD.created_at
-        ),
-        JSON_OBJECT(
+            'id', NEW.id,
+            'created_at', NEW.created_at,
+            'updated_at', NEW.updated_at,
+            'created_by', NEW.created_by,
+            'updated_by', NEW.updated_by,
+            'void', NEW.void,
             'member_id', NEW.member_id,
             'first_name', NEW.first_name,
             'last_name', NEW.last_name,
             'email', NEW.email,
             'phone', NEW.phone,
+            'password', NEW.`password`,
             'address', NEW.address,
             'city', NEW.city,
             'state', NEW.state,
             'country', NEW.country,
             'postal_code', NEW.postal_code,
-            'status', NEW.status,
-            'created_at', NEW.created_at
+            'role', NEW.`role`,
+            'status', NEW.`status`
         ),
-        NEW.id,
-        NOW()
+        NEW.updated_by,
+        UTC_TIMESTAMP()
     );
-END $$
+END$$
 
 DELIMITER ;

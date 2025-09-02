@@ -4,27 +4,27 @@ CREATE TRIGGER trg_after_insert_tblLoans
 AFTER INSERT ON tblLoans
 FOR EACH ROW
 BEGIN
-    INSERT INTO tblAuditLogs (
-        table_name,
-        record_id,
-        action,
-        changed_data,
-        changed_by,
-        changed_at
-    ) VALUES (
+    INSERT INTO tblAuditLogs VALUES (
         'tblLoans',
         NEW.id,
-        'insert',
+        1,
         JSON_OBJECT(
-            'book_id', NEW.book_id,
+            'id', NEW.id,
+            'created_at', NEW.created_at, 
+            'updated_at', NEW.updated_at,
+            'created_by', NEW.created_by, 
+            'updated_by', NEW.updated_by, 
+            'void', NEW.void,
+            'copy_id', NEW.copy_id,
             'user_id', NEW.user_id,
-            'loan_date', NEW.loan_date,
+            'issue_date', NEW.issue_date,
+            'due_date', NEW.due_date,
             'return_date', NEW.return_date,
-            'status', NEW.status
+            'status', NEW.status,
+            'fine_amount', NEW.fine_amount
         ),
-        NULL,
-        NOW()
+        NEW.created_by,
+        UTC_TIMESTAMP()
     );
 END$$
-
-DELIMITER ;
+            

@@ -24,11 +24,7 @@
 			"usp_AddColumn": {
 				"dependencies": {
 					"functions": ["ufn_DoesTableExist", "ufn_DoesColumnExist"],
-					"procs": [
-						"usp_CreatePrimaryKey",
-						"usp_AutoIncrement",
-						"usp_AddColumn"
-					]
+					"procs": ["usp_AddCheck"]
 				}
 			},
 			"usp_AutoIncrement": {
@@ -52,7 +48,11 @@
 			"usp_CreateTable": {
 				"dependencies": {
 					"functions": ["ufn_DoesTableExist"],
-					"procs": []
+					"procs": [
+						"usp_CreatePrimaryKey",
+						"usp_AutoIncrement",
+						"usp_AddColumn"
+					]
 				}
 			},
 			"usp_CreateUniqueKey": {
@@ -74,6 +74,12 @@
 				}
 			},
 			"usp_MarkRequired": {
+				"dependencies": {
+					"functions": ["ufn_DoesTableExist", "ufn_DoesColumnExist"],
+					"procs": []
+				}
+			},
+			"usp_CreateIndex": {
 				"dependencies": {
 					"functions": ["ufn_DoesTableExist", "ufn_DoesColumnExist"],
 					"procs": []

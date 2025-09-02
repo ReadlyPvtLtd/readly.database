@@ -1,0 +1,1 @@
+CALL usp_CreateUniqueKey('tblBooksAuthors', 'book_id, author_id');

@@ -118,6 +118,14 @@ BEGIN
         EXECUTE stmt;
         DEALLOCATE PREPARE stmt;
 
+        -- Apply check constraint for non-empty string if required and a text type
+        IF in_required THEN
+            IF v_type_prefix IN ('CHAR', 'VARCHAR', 'TEXT', 'TINYTEXT', 'MEDIUMTEXT', 'LONGTEXT', 'ENUM', 'SET') THEN
+                SET @check_expr = CONCAT('LENGTH(TRIM(`', in_column_name, '`)) > 0');
+                CALL usp_AddCheck(in_table_name, in_column_name, @check_expr);
+            END IF;
+        END IF;
+
         SELECT CONCAT(
             'Column ',
             in_column_name,

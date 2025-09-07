@@ -6,7 +6,7 @@ CALL usp_AddColumn('tblbooks','Description','TEXT');
 CALL usp_AddColumn('tblbooks','Edition','VARCHAR(50)');
 CALL usp_AddColumn('tblbooks','Language_code','CHAR(5)');
 CALL usp_AddColumn('tblbooks','Page_count','INT');
-CALL uspAddCousp_AddColumnlumnIfNotExists('tblbooks','Publication_year','YEAR)');
+CALL usp_AddColumn('tblbooks','Publication_year','YEAR)');
 CALL usp_AddColumn('tblbooks','Publication_id','BIGINT');
 CALL usp_AddColumn('tblbooks','Cover_image_url','TEXT');
 CALL usp_AddColumn('tblbooks','Meta_title','VARCHAR(255)');

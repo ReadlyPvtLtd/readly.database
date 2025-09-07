@@ -1,7 +1,7 @@
-CALL uspAddColumnIfNotExists('tblLoans','copy_id','BIGINT');
-CALL uspAddColumnIfNotExists('tblLoans','user_id','BIGINT');
-CALL uspAddColumnIfNotExists('tblLoans','issue_date','DATE');
-CALL uspAddColumnIfNotExists('tblLoans','due_date','DATE');
-CALL uspAddColumnIfNotExists('tblLoans','return_date','DATE');
-CALL uspAddColumnIfNotExists('tblLoans','status','TINYINT');
-CALL uspAddColumnIfNotExists('tblLoans','fine_amount','DECIMAL');
+CALL usp_AddColumn('tblLoans','copy_id','BIGINT');
+CALL usp_AddColumn('tblLoans','user_id','BIGINT');
+CALL usp_AddColumn('tblLoans','issue_date','DATE');
+CALL usp_AddColumn('tblLoans','due_date','DATE');
+CALL usp_AddColumn('tblLoans','return_date','DATE');
+CALL usp_AddColumn('tblLoans','status','TINYINT');
+CALL usp_AddColumn('tblLoans','fine_amount','DECIMAL');

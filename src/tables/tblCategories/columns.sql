@@ -1,3 +1,3 @@
-CALL uspAddColumnIfNotExists('tblCategories','parent_id','BIGINT');
-CALL uspAddColumnIfNotExists('tblCategories','name','VARCHAR(255)');
-CALL uspAddColumnIfNotExists('tblCategories','description','TEXT');
+CALL usp_AddColumn('tblCategories','parent_id','BIGINT');
+CALL usp_AddColumn('tblCategories','name','VARCHAR(255)');
+CALL usp_AddColumn('tblCategories','description','TEXT');

@@ -1,1 +1,1 @@
-CALL uspAddPKIfNotExists('tblBooksAttributes','book_id','tblBooks','id','fk_tblBooksAttributes.book_id_tblBooks.id');
+CALL usp_CreateForeignKey('tblBooksAttributes','book_id','tblBooks','id','fk_tblBooksAttributes.book_id_tblBooks.id');

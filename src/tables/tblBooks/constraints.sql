@@ -1,3 +1,2 @@
-CALL uspAddPKIfNotExists('tblBooks','id');
-CALL uspApplyAutoIncrementIfExists('tblBooks','id');
-CALL uspAlterColumnNotNull('tblBook','title');
+CALL usp_CreatePrimaryKey('tblBooks','id');
+CALL usp_AutoIncrement('tblBooks','id');

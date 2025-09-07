@@ -1,3 +1,2 @@
-CALL uspAddPKIfNotExists('tblGenres','id');
-CALL uspApplyAutoIncrementIfExists('tblGenres','id');
-CALL uspAlterColumnNotNull('tblGenres','name');
+CALL usp_CreatePrimaryKey('tblGenres','id');
+CALL usp_AutoIncrement('tblGenres','id');

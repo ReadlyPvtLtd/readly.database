@@ -1,1 +1,1 @@
-CALL uspAddPKIfNotExists('tblDigitalResources','book_id','tblBooks','id','fk_tblDigitalResources.book_id_tblBooks.id');
+CALL usp_CreateForeignKey('tblDigitalResources','book_id','tblBooks','id','fk_tblDigitalResources.book_id_tblBooks.id');

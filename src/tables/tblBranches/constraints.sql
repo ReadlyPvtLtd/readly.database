@@ -1,3 +1,2 @@
-CALL uspAddPKIfNotExists('tblBranches','id');
-CALL uspApplyAutoIncrementIfExists('tblBranches','id');
-CALL uspAlterColumnNotNull('tblBranches','name');
+CALL usp_CreatePrimaryKey('tblBranches','id');
+CALL usp_AutoIncrement('tblBranches','id');

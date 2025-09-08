@@ -1,6 +1,12 @@
-CALL usp_AddColumn('tblUsers', 'member_id', 'VARCHAR(20)', 'ufn_GenerateMemberId()', TRUE);
 CALL usp_AddColumn('tblUsers', 'first_name', 'VARCHAR(100)', NULL, TRUE);
 CALL usp_AddColumn('tblUsers', 'last_name', 'VARCHAR(100)', NULL, TRUE);
 CALL usp_AddColumn('tblUsers', 'email', 'VARCHAR(255)', NULL, TRUE);
 CALL usp_AddColumn('tblUsers', 'phone', 'VARCHAR(50)', NULL, TRUE);
 CALL usp_AddColumn('tblUsers', 'password', 'VARCHAR(255)', NULL, TRUE);
+CALL usp_AddColumn('tblUsers', 'address', 'TEXT', NULL, TRUE);
+CALL usp_AddColumn('tblUsers', 'city', 'VARCHAR(255)', NULL, TRUE);
+CALL usp_AddColumn('tblUsers', 'state', 'VARCHAR(255)', NULL, TRUE);
+CALL usp_AddColumn('tblUsers', 'country', 'VARCHAR(255)', NULL, TRUE);
+CALL usp_AddColumn('tblUsers', 'postal_code', 'VARCHAR(20)', NULL, TRUE);
+CALL usp_AddColumn('tblUsers', 'role', 'TINYINT UNSIGNED', NULL, TRUE);
+CALL usp_AddColumn('tblUsers', 'status', 'TINYINT UNSIGNED', NULL, TRUE);

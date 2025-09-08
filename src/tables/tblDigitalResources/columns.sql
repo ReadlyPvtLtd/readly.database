@@ -1,5 +1,5 @@
-CALL usp_AddColumn('tblDigitalResources','book_id','BIGINT');
-CALL usp_AddColumn('tblDigitalResources','file_url','TEXT');
-CALL usp_AddColumn('tblDigitalResources','file_type','VARCHAR(50)');
-CALL usp_AddColumn('tblDigitalResources','File_size','BIGINT');
-CALL usp_AddColumn('tblDigitalResources','Access_restrictions','TEXT');
+CALL usp_AddColumn('tblDigitalResources','book_id','BIGINT SIGNED', NULL, TRUE);
+CALL usp_AddColumn('tblDigitalResources','file_url','TEXT', NULL, TRUE);
+CALL usp_AddColumn('tblDigitalResources','file_type','VARCHAR(50)', NULL, TRUE);
+CALL usp_AddColumn('tblDigitalResources','file_size','BIGINT SIGNED', NULL, TRUE);
+CALL usp_AddColumn('tblDigitalResources','access_restrictions','TEXT', NULL, TRUE);

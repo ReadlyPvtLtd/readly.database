@@ -1,2 +1,1 @@
-CALL usp_CreatePrimaryKey('tblBookGenres','id');
-CALL usp_AutoIncrement('tblBookGenres','id');
+CALL usp_CreateUniqueKey('tblBooksGenres', 'UK_tblBooksGenres_book_id_genre_id', 'book_id, genre_id');

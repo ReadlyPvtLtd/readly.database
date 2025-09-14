@@ -1,2 +1,11 @@
-CALL usp_CreatePrimaryKey('tblBranches','id');
-CALL usp_AutoIncrement('tblBranches','id');
+CALL usp_CreateUniqueKey('tblBranches', 'UK_tblBranches_name', 'name');
+CALL usp_AddCheck('tblBranches', 'CK_tblBranches_name', 'name IS NOT NULL AND name <> ''''');
+CALL usp_AddCheck('tblBranches', 'CK_tblBranches_address', 'address IS NOT NULL AND address <> ''''');
+CALL usp_AddCheck('tblBranches', 'CK_tblBranches_city', 'city IS NOT NULL AND city <> ''''');
+CALL usp_AddCheck('tblBranches', 'CK_tblBranches_state', 'state IS NOT NULL AND state <> ''''');
+CALL usp_AddCheck('tblBranches', 'CK_tblBranches_country', 'country IS NOT NULL AND country <> ''''');
+CALL usp_AddCheck('tblBranches', 'CK_tblBranches_postal_code', 'postal_code IS NOT NULL AND postal_code <> ''''');
+CALL usp_CreateUniqueKey('tblBranches', 'UK_tblBranches_phone', 'phone');
+CALL usp_AddCheck('tblBranches', 'CK_tblBranches_phone', 'phone IS NOT NULL AND phone <> ''''');
+CALL usp_CreateUniqueKey('tblBranches', 'UK_tblBranches_email', 'email');
+CALL usp_AddCheck('tblBranches', 'CK_tblBranches_email', 'email IS NOT NULL AND email LIKE ''%@%.%''');

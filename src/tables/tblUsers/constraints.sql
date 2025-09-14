@@ -1,2 +1,14 @@
-CALL usp_CreateUniqueKey('tblUsers', 'member_id');
-CALL usp_CreateUniqueKey('tblUsers', 'email');
+CALL usp_AddCheck('tblUsers', 'CK_tblUsers_first_name', 'first_name IS NOT NULL AND first_name <> ''''');
+CALL usp_AddCheck('tblUsers', 'CK_tblUsers_last_name', 'last_name IS NOT NULL AND last_name <> ''''');
+CALL usp_CreateUniqueKey('tblUsers', 'UK_tblUsers_email', 'email');
+CALL usp_AddCheck('tblUsers', 'CK_tblUsers_email', 'email IS NOT NULL AND email LIKE ''%@%.%''');
+CALL usp_CreateUniqueKey('tblUsers', 'UK_tblUsers_phone', 'phone');
+CALL usp_AddCheck('tblUsers', 'CK_tblUsers_phone', 'phone IS NOT NULL AND phone <> ''''');
+CALL usp_AddCheck('tblUsers', 'CK_tblUsers_password', 'password IS NOT NULL AND password <> ''''');
+CALL usp_AddCheck('tblUsers', 'CK_tblUsers_address', 'address IS NOT NULL AND address <> ''''');
+CALL usp_AddCheck('tblUsers', 'CK_tblUsers_city', 'city IS NOT NULL AND city <> ''''');
+CALL usp_AddCheck('tblUsers', 'CK_tblUsers_state', 'state IS NOT NULL AND state <> ''''');
+CALL usp_AddCheck('tblUsers', 'CK_tblUsers_country', 'country IS NOT NULL AND country <> ''''');
+CALL usp_AddCheck('tblUsers', 'CK_tblUsers_postal_code', 'postal_code IS NOT NULL AND postal_code <> ''''');
+CALL usp_AddCheck('tblUsers', 'CK_tblUsers_role', 'role IN (0, 1, 2)');
+CALL usp_AddCheck('tblUsers', 'CK_tblUsers_status', 'status IN (0, 1, 2)');

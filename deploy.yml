@@ -1,29 +1,62 @@
-name: 🚀 Auto Deploy to Server
+name: 🚀 Manual Deploy Workflow
 
 on:
-  push:
-    branches:
-      - main   # Change if you use another branch
+  workflow_dispatch:   # Allows manual trigger from GitHub UI
+    inputs:
+      environment:
+        description: 'Select deployment environment'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - staging
+          - production
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: 🧾 Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Setup SSH
-        uses: webfactory/ssh-agent@v0.9.0
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-      - name: Deploy to Server
+      - name: 🏗️ Install Dependencies
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
-            cd /path/to/your/project
-            git pull origin main
-            npm install --production    # or pip install -r requirements.txt
-            pm2 restart all             # or systemctl restart your-app
-            echo "✅ Deployment complete!"
-          EOF
+          echo "Installing project dependencies..."
+          # Example for Node.js:
+          if [ -f package.json ]; then
+            npm ci
+          fi
+          # Example for Python:
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          fi
+
+      - name: ⚙️ Build Project
+        run: |
+          echo "Building the project..."
+          # Replace this with your build command
+          if [ -f package.json ]; then
+            npm run build
+          elif [ -f Makefile ]; then
+            make build
+          else
+            echo "No build step found, skipping."
+          fi
+
+      - name: 📦 Create Deployment Artifact
+        run: |
+          echo "Packaging build files..."
+          mkdir -p deploy-artifacts
+          # Example: zip everything except .git and node_modules
+          zip -r deploy-artifacts/build.zip . -x "*.git*" "node_modules/*"
+          echo "✅ Artifact packaged at deploy-artifacts/build.zip"
+
+      - name: 🧰 Upload Artifact (Optional)
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-package
+          path: deploy-artifacts/build.zip
+
+      - name: ✅ Deployment Complete
+        run: echo "Manual deployment workflow executed successfully!"

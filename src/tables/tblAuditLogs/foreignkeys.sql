@@ -1,0 +1,1 @@
+CALL usp_CreateForeignKey('tblAuditLogs', 'changed_by', 'tblUsers', 'id');

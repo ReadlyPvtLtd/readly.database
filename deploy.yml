@@ -1,0 +1,62 @@
+name: 🚀 Manual Deploy Workflow
+
+on:
+  workflow_dispatch:   # Allows manual trigger from GitHub UI
+    inputs:
+      environment:
+        description: 'Select deployment environment'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - staging
+          - production
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🧾 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 🏗️ Install Dependencies
+        run: |
+          echo "Installing project dependencies..."
+          # Example for Node.js:
+          if [ -f package.json ]; then
+            npm ci
+          fi
+          # Example for Python:
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          fi
+
+      - name: ⚙️ Build Project
+        run: |
+          echo "Building the project..."
+          # Replace this with your build command
+          if [ -f package.json ]; then
+            npm run build
+          elif [ -f Makefile ]; then
+            make build
+          else
+            echo "No build step found, skipping."
+          fi
+
+      - name: 📦 Create Deployment Artifact
+        run: |
+          echo "Packaging build files..."
+          mkdir -p deploy-artifacts
+          # Example: zip everything except .git and node_modules
+          zip -r deploy-artifacts/build.zip . -x "*.git*" "node_modules/*"
+          echo "✅ Artifact packaged at deploy-artifacts/build.zip"
+
+      - name: 🧰 Upload Artifact (Optional)
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-package
+          path: deploy-artifacts/build.zip
+
+      - name: ✅ Deployment Complete
+        run: echo "Manual deployment workflow executed successfully!"

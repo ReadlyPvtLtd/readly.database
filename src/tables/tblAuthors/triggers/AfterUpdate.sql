@@ -1,0 +1,48 @@
+-- SPDX-License-Identifier: Apache-2.0
+-- Licensed to the Ed-Fi Alliance under one or more agreements.
+-- The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
+-- See the LICENSE and NOTICES files in the project root for more information.
+
+DELIMITER $$
+
+CREATE TRIGGER `trg_AfterUpdate_tblAuthors`
+AFTER UPDATE ON `tblAuthors`
+FOR EACH ROW
+BEGIN
+    -- NOTE: The changed_by column is set to 0 as a placeholder.
+    -- You should replace this with a mechanism to get the current user's ID.
+    INSERT INTO `tblAuditLogs` (
+        `table_name`,
+        `record_id`,
+        `action`,
+        `old_value`,
+        `new_value`,
+        `changed_by`,
+        `changed_at`
+    )
+    VALUES (
+        'tblAuthors',
+        NEW.author_id,
+        2, -- 2 for UPDATE
+        JSON_OBJECT(
+            'author_id', OLD.author_id,
+            'first_name', OLD.first_name,
+            'last_name', OLD.last_name,
+            'bio', OLD.bio,
+            'website_url', OLD.website_url,
+            'avatar_url', OLD.avatar_url
+        ),
+        JSON_OBJECT(
+            'author_id', NEW.author_id,
+            'first_name', NEW.first_name,
+            'last_name', NEW.last_name,
+            'bio', NEW.bio,
+            'website_url', NEW.website_url,
+            'avatar_url', NEW.avatar_url
+        ),
+        0, -- Placeholder for user ID
+        NOW()
+    );
+END$$
+
+DELIMITER ;

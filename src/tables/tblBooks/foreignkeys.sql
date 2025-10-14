@@ -1,0 +1,1 @@
+CALL usp_CreateForeignKey('tblBooks','publisher_id','tblPublishers','id','fk_tblBooks.publisher_id_tblPublishers.id');

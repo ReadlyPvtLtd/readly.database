@@ -1,0 +1,1 @@
+CALL usp_CreateForeignKey('tblCategories','parent_id','tblCategories','id','tblCategories.parent_id_tblCategories.id');

@@ -1,0 +1,1 @@
+CALL usp_CreateUniqueKey('tblBooksGenres', 'UK_tblBooksGenres_book_id_genre_id', 'book_id, genre_id');

@@ -1,0 +1,11 @@
+CALL usp_AddColumn('tblBooks','isbn10','CHAR(10)', NULL, TRUE);
+CALL usp_AddColumn('tblBooks','isbn13','CHAR(13)', NULL, TRUE);
+CALL usp_AddColumn('tblBooks','title','VARCHAR(255)', NULL, TRUE);
+CALL usp_AddColumn('tblBooks','subtitle','VARCHAR(255)', NULL, FALSE);
+CALL usp_AddColumn('tblBooks','description','TEXT', NULL, TRUE);
+CALL usp_AddColumn('tblBooks','edition','VARCHAR(50)', NULL, TRUE);
+CALL usp_AddColumn('tblBooks','language_id','BIGINT UNSIGNED', NULL, TRUE);
+CALL usp_AddColumn('tblBooks','page_count','INT', NULL, TRUE);
+CALL usp_AddColumn('tblBooks','publication_year','YEAR', NULL, TRUE);
+CALL usp_AddColumn('tblBooks','publisher_id','BIGINT UNSIGNED', NULL, TRUE);
+CALL usp_AddColumn('tblBooks','cover_image_url','VARCHAR(512)', NULL, TRUE);

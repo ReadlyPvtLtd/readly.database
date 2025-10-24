@@ -1,0 +1,178 @@
+name: Deploy
+
+permissions:
+  contents: read
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Source"
+        required: true
+        type: choice
+        options:
+          - main
+          - stage
+          - develop
+      reason:
+        description: "Notes"
+        required: true
+        default: "Manual trigger"
+
+jobs:
+  prepare:
+    name: Prepare Deployment
+    runs-on: ubuntu-latest
+    outputs:
+      env_name: ${{ steps.set_vars.outputs.env_name }}
+      env_display_name: ${{ steps.set_vars.outputs.env_display_name }}
+      concurrency_group: ${{ steps.set_vars.outputs.concurrency_group }}
+    steps:
+      - name: Set environment variables
+        id: set_vars
+        run: |
+          if [ "${{ github.event.inputs.branch }}" = "main" ]; then
+            echo "env_name=Prod" >> $GITHUB_OUTPUT
+            echo "env_display_name=Production" >> $GITHUB_OUTPUT
+            echo "concurrency_group=deploy-main" >> $GITHUB_OUTPUT
+          elif [ "${{ github.event.inputs.branch }}" = "stage" ]; then
+            echo "env_name=Stage" >> $GITHUB_OUTPUT
+            echo "env_display_name=Stage" >> $GITHUB_OUTPUT
+            echo "concurrency_group=deploy-stage" >> $GITHUB_OUTPUT
+          elif [ "${{ github.event.inputs.branch }}" = "develop" ]; then
+            echo "env_name=Test" >> $GITHUB_OUTPUT
+            echo "env_display_name=Test" >> $GITHUB_OUTPUT
+            echo "concurrency_group=deploy-develop" >> $GITHUB_OUTPUT
+          fi
+
+  deploy:
+    name: Deploy (${{ needs.prepare.outputs.env_display_name }})
+    needs: [prepare]
+    runs-on: ubuntu-latest
+    environment: ${{ needs.prepare.outputs.env_name }}
+    concurrency:
+      group: ${{ needs.prepare.outputs.concurrency_group }}
+      cancel-in-progress: false
+    env:
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PWD: ${{ secrets.DB_PWD }}
+      DB_CA_CERT: ${{ secrets.DB_CA_CERT }}
+      DB_PORT: ${{ secrets.DB_PORT }}
+    steps:
+      - name: Prepare Start Notification Body
+        id: prep_start_email
+        run: |
+          cat <<EOF > template_start.html
+          ${{ vars.PRE_DEPLOYMENT_NOTIFICATION_EMAIL_TEMPLATE }}
+          EOF
+          body=$(sed -e 's|{{REPO_NAME}}|${{ github.repository }}|g' \
+              -e 's|{{ENV_NAME}}|${{ needs.prepare.outputs.env_display_name }}|g' \
+              -e 's|{{BRANCH}}|${{ github.event.inputs.branch }}|g' \
+              -e 's|{{COMMIT_SHA}}|${{ github.sha }}|g' \
+              -e 's|{{TRIGGERED_BY}}|${{ github.actor }}|g' \
+              -e 's|{{REASON}}|${{ github.event.inputs.reason }}|g' \
+              -e "s|{{WORKFLOW_URL}}|${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|g" \
+              template_start.html)
+          echo "body<<EOF" >> $GITHUB_OUTPUT
+          echo "$body" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Prepare Start Notification Subject
+        id: prep_start_subject
+        run: |
+          subject='${{ vars.PRE_DEPLOYMENT_NOTIFICATION_EMAIL_SUBJECT }}'
+          subject="${subject//'{{ENV_NAME}}'/'${{ needs.prepare.outputs.env_display_name }}'}"
+          echo "value=$subject" >> $GITHUB_OUTPUT
+
+      - name: Send Deployment Start Notification
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.SMTP_SERVER }}
+          server_port: 465
+          username: ${{ secrets.SMTP_USER }}
+          password: ${{ secrets.SMTP_PWD }}
+          subject: ${{ steps.prep_start_subject.outputs.value }}
+          to: ${{ secrets.AUDIENCE_ON_DEPLOY }}
+          from: ${{ secrets.SMTP_USER }}
+          html_body: ${{ steps.prep_start_email.outputs.body }}
+
+      - name: Checkout ${{ github.event.inputs.branch }} branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.branch }}
+      - name: Install MySQL client
+        run: sudo apt-get update && sudo apt-get install -y mysql-client
+      - name: Install PowerShell
+        run: sudo apt-get update && sudo apt-get install -y powershell
+      - name: Run PowerShell Migration Script
+        shell: pwsh
+        run: ./Run-Migration.ps1 -db warrantybeedb -skipdata
+      - name: Run Generated SQL Script on DB
+        run: |
+          echo "$DB_CA_CERT" > db-ca.pem
+          mysql --ssl-ca=db-ca.pem \
+                --host=$DB_HOST \
+                --user=$DB_USER \
+                --password=$DB_PWD \
+                --port=$DB_PORT \
+                --protocol=tcp \
+                warrantybeedb < output.sql
+
+  notify-end:
+    name: Send Deployment Completion Notification
+    needs: [prepare, deploy]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set Deployment Status
+        id: set_status
+        run: |
+          if [ "${{ needs.deploy.result }}" == "success" ]; then
+            echo "status=Succeeded" >> $GITHUB_OUTPUT
+            echo "color=#28a745" >> $GITHUB_OUTPUT
+            echo "result=✅ Success" >> $GITHUB_OUTPUT
+          else
+            echo "status=Failed" >> $GITHUB_OUTPUT
+            echo "color=#dc3545" >> $GITHUB_OUTPUT
+            echo "result=❌ Failure" >> $GITHUB_OUTPUT
+          fi
+      - name: Prepare End Notification Body
+        id: prep_end_email
+        run: |
+          cat <<EOF > template_end.html
+          ${{ vars.POST_DEPLOYMENT_NOTIFICATION_EMAIL_TEMPLATE }}
+          EOF
+          body=$(sed -e "s|{{DEPLOY_COLOR}}|${{ steps.set_status.outputs.color }}|g" \
+              -e "s|{{DEPLOY_STATUS}}|${{ steps.set_status.outputs.status }}|g" \
+              -e "s|{{DEPLOY_RESULT}}|${{ steps.set_status.outputs.result }}|g" \
+              -e 's|{{REPO_NAME}}|${{ github.repository }}|g' \
+              -e 's|{{ENV_NAME}}|${{ needs.prepare.outputs.env_display_name }}|g' \
+              -e 's|{{BRANCH}}|${{ github.event.inputs.branch }}|g' \
+              -e 's|{{COMMIT_SHA}}|${{ github.sha }}|g' \
+              -e 's|{{TRIGGERED_BY}}|${{ github.actor }}|g' \
+              -e "s|{{WORKFLOW_URL}}|${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|g" \
+              template_end.html)
+          echo "body<<EOF" >> $GITHUB_OUTPUT
+          echo "$body" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Prepare End Notification Subject
+        id: prep_end_subject
+        run: |
+          subject='${{ vars.POST_DEPLOYMENT_NOTIFICATION_EMAIL_SUBJECT }}'
+          subject="${subject//'{{ENV_NAME}}'/'${{ needs.prepare.outputs.env_display_name }}'}"
+          subject="${subject//'{{STATUS}}'/'${{ steps.set_status.outputs.status }}'}"
+          echo "value=$subject" >> $GITHUB_OUTPUT
+
+      - name: Send deployment status email
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.SMTP_SERVER }}
+          server_port: 465
+          username: ${{ secrets.SMTP_USER }}
+          password: ${{ secrets.SMTP_PWD }}
+          subject: ${{ steps.prep_end_subject.outputs.value }}
+          to: ${{ secrets.AUDIENCE_ON_DEPLOY }}
+          from: ${{ secrets.SMTP_USER }}
+          html_body: ${{ steps.prep_end_email.outputs.body }}

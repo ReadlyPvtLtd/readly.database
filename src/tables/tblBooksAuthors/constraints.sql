@@ -1,1 +1,1 @@
-CALL usp_CreateUniqueKey('tblBooksAuthors', 'UK_tblBooksAuthors_book_id_author_id', 'book_id, author_id');
+CALL usp_CreateUniqueKey('tblBooksAuthors', 'book_id, author_id');

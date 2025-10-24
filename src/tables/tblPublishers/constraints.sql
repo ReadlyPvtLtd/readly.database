@@ -1,4 +1,4 @@
-CALL usp_CreateUniqueKey('tblPublishers', 'UK_tblPublishers_name', 'name');
+CALL usp_CreateUniqueKey('tblPublishers', 'name');
 CALL usp_AddCheck('tblPublishers', 'CK_tblPublishers_name', 'name IS NOT NULL AND name <> ''''');
 CALL usp_AddCheck('tblPublishers', 'CK_tblPublishers_address', 'address IS NOT NULL AND address <> ''''');
 CALL usp_AddCheck('tblPublishers', 'CK_tblPublishers_city', 'city IS NOT NULL AND city <> ''''');

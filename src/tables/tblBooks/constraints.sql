@@ -1,5 +1,5 @@
-CALL usp_CreateUniqueKey('tblBooks', 'UK_tblBooks_isbn10', 'isbn10');
-CALL usp_CreateUniqueKey('tblBooks', 'UK_tblBooks_isbn13', 'isbn13');
+CALL usp_CreateUniqueKey('tblBooks', 'isbn10');
+CALL usp_CreateUniqueKey('tblBooks', 'isbn13');
 CALL usp_AddCheck('tblBooks', 'CK_tblBooks_isbn10', 'isbn10 IS NOT NULL AND CHAR_LENGTH(isbn10) = 10');
 CALL usp_AddCheck('tblBooks', 'CK_tblBooks_isbn13', 'isbn13 IS NOT NULL AND CHAR_LENGTH(isbn13) = 13');
 CALL usp_AddCheck('tblBooks', 'CK_tblBooks_title', 'title IS NOT NULL AND title <> ''''');

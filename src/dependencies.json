@@ -10,6 +10,11 @@
 				"dependencies": {
 					"functions": []
 				}
+			},
+			"ufn_DoColumnsExist": {
+				"dependencies": {
+					"functions": ["ufn_DoesColumnExist"]
+				}
 			}
 		}
 	},
@@ -24,7 +29,7 @@
 			"usp_AddColumn": {
 				"dependencies": {
 					"functions": ["ufn_DoesTableExist", "ufn_DoesColumnExist"],
-					"procs": ["usp_AddCheck"]
+					"procs": []
 				}
 			},
 			"usp_AutoIncrement": {
@@ -36,6 +41,12 @@
 			"usp_CreateForeignKey": {
 				"dependencies": {
 					"functions": ["ufn_DoesTableExist", "ufn_DoesColumnExist"],
+					"procs": []
+				}
+			},
+			"usp_CreateIndex": {
+				"dependencies": {
+					"functions": ["ufn_DoesTableExist", "ufn_DoColumnsExist"],
 					"procs": []
 				}
 			},
@@ -51,7 +62,8 @@
 					"procs": [
 						"usp_CreatePrimaryKey",
 						"usp_AutoIncrement",
-						"usp_AddColumn"
+						"usp_AddColumn",
+						"usp_CreateUniqueKey"
 					]
 				}
 			},
@@ -79,13 +91,57 @@
 					"procs": []
 				}
 			},
-			"usp_CreateIndex": {
+			"usp_ResetAutoIncrement": {
 				"dependencies": {
-					"functions": ["ufn_DoesTableExist", "ufn_DoesColumnExist"],
+					"functions": ["ufn_DoesTableExist"],
+					"procs": []
+				}
+			}
+		},
+		"business": {
+			"usp_GetCountries": {
+				"dependencies": {
+					"functions": [],
+					"procs": []
+				}
+			},
+			"usp_GetCurrencies": {
+				"dependencies": {
+					"functions": [],
+					"procs": []
+				}
+			},
+			"usp_GetStates": {
+				"dependencies": {
+					"functions": [],
+					"procs": []
+				}
+			},
+			"usp_GetTimeZones": {
+				"dependencies": {
+					"functions": [],
+					"procs": []
+				}
+			},
+			"usp_GetUser": {
+				"dependencies": {
+					"functions": [],
+					"procs": []
+				}
+			},
+			"usp_RegisterUser": {
+				"dependencies": {
+					"functions": [],
 					"procs": []
 				}
 			}
 		}
 	},
-	"tables": {}
+	"tables": {
+		"tblCountries": ["tblCurrencies"],
+		"tblCurrencies": [],
+		"tblStates": ["tblCountries", "tblTimeZones"],
+		"tblTimeZones": [],
+		"tblUsers": []
+	}
 }

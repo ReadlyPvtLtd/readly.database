@@ -1,4 +1,4 @@
-CALL usp_CreateUniqueKey('tblFines', 'UK_tblFines_loan_id', 'loan_id');
+CALL usp_CreateUniqueKey('tblFines', 'loan_id');
 CALL usp_AddCheck('tblFines', 'CK_tblFines_amount', 'amount > 0');
 CALL usp_AddCheck('tblFines', 'CK_tblFines_reason', 'reason IS NOT NULL AND reason <> ''''');
 CALL usp_AddCheck('tblFines', 'CK_tblFines_issued_at', 'issued_at <= NOW()');

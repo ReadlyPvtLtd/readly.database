@@ -107,7 +107,7 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y powershell
       - name: Run PowerShell Migration Script
         shell: pwsh
-        run: ./Run-Migration.ps1 -db warrantybeedb -skipdata
+        run: ./Run-Migration.ps1 -skipdata
       - name: Run Generated SQL Script on DB
         run: |
           echo "$DB_CA_CERT" > db-ca.pem
@@ -117,7 +117,7 @@ jobs:
                 --password=$DB_PWD \
                 --port=$DB_PORT \
                 --protocol=tcp \
-                warrantybeedb < output.sql
+                readlydb < output.sql
 
   notify-end:
     name: Send Deployment Completion Notification

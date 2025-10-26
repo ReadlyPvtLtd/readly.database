@@ -134,6 +134,84 @@
 					"functions": [],
 					"procs": []
 				}
+			},
+			"usp_CreateUserAccount": {
+				"dependencies": {
+					"functions": [],
+					"procs": []
+				}
+			},
+			"usp_DoesUserExists": {
+				"dependencies": {
+					"functions": [],
+					"procs": []
+				}
+			},
+			"usp_CreateAuthor": {
+				"dependencies": {
+					"functions": [],
+					"procs": []
+				}
+			},
+			"usp_DoesAuthorExists": {
+				"dependencies": {
+					"functions": [],
+					"procs": []
+				}
+			},
+			"usp_AssignBookToAuthor": {
+				"dependencies": {
+					"functions": [],
+					"procs": []
+				}
+			},
+			"usp_AssignGenreToBook": {
+				"dependencies": {
+					"functions": [],
+					"procs": []
+				}
+			},
+			"usp_CreateCategory": {
+				"dependencies": {
+					"functions": [],
+					"procs": []
+				}
+			},
+			"usp_EditCategory": {
+				"dependencies": {
+					"functions": [],
+					"procs": []
+				}
+			},
+			"usp_AddCopy": {
+				"dependencies": {
+					"functions": [],
+					"procs": []
+				}
+			},
+			"usp_CreateFine": {
+				"dependencies": {
+					"functions": [],
+					"procs": []
+				}
+			},
+			"usp_AddGenre": {
+				"dependencies": {
+					"functions": [],
+					"procs": []
+				}
+			},
+			"usp_AddLoan": {
+				"dependencies": {
+					"functions": [],
+					"procs": []
+				}
+			},
+			"usp_AddPublisher": {
+				"dependencies": {
+					"functions": [],
+					"procs": []
+				}
 			}
 		}
 	},
